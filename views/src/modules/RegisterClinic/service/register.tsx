@@ -23,7 +23,7 @@ export const registerService = () => {
         Address: registerFormValues.address
       } satisfies IRegisterClinicRequestDTO
 
-      const response = await axiosInstance.post('clinics/register', request)
+      const response = await axiosInstance.post('clinics/public/register', request)
       return response
     } catch (error) {
       console.error(error)

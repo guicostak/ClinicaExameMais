@@ -3,6 +3,8 @@ import { loginService } from "../service/login";
 import { ZodError, ZodIssueBase } from "zod";
 import Swal from "sweetalert2";
 import { loginSchema } from "../validation/login";
+import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie'
 
 export interface ILoginFormValues {
   email: string;
@@ -16,6 +18,7 @@ export interface ILoginFormErrors {
 }
 
 export const useLogin = () => {
+  const navigate = useNavigate();
   const { callLoginApi } = loginService();
   const [loginFormErrors, setLoginFormErrors] = useState<ILoginFormErrors>({
     email: "",
@@ -55,8 +58,12 @@ export const useLogin = () => {
       await loginSchema.parse(loginFormValues)
       const response = await callLoginApi(loginFormValues);
 
-      if (!response) {
-        throw new Error('Não foi possível cadastrar sua conta')
+      if (response) {
+        navigateAfterLogin(response.data.profile)
+        saveResponseDataInCookies(response.data)
+      }
+      else {
+        throw new Error('Não foi possível logar na sua conta')
       }
 
     } catch (error) {
@@ -88,6 +95,16 @@ export const useLogin = () => {
   const handleShowPasswordButtonClick = useCallback(() => {
     setShowPassword(!showPassword);
   }, [showPassword]);
+
+  const navigateAfterLogin = (profileType: string) => {
+    profileType === 'Clinic' ? navigate("/clinic/dashboard") : navigate("/patient/dashboard")
+  }
+
+  const saveResponseDataInCookies = (responseData: any): void => {
+    Cookies.set('id', responseData.id);
+    Cookies.set('accessToken', responseData.accessToken);
+    Cookies.set('refreshToken', responseData.refreshToken);
+  };
 
   return {
     loginFormValues,
