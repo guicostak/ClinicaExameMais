@@ -17,7 +17,7 @@ export const loginService = () => {
         Password: loginFormValues.password
       } satisfies ILoginRequestDTO
 
-      const response = await axiosInstance.post('auth/login', request)
+      const response = await axiosInstance.post('auth/public/login', request)
       return response
     } catch (error) {
       console.error(error)
