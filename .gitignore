@@ -318,3 +318,9 @@ FodyWeavers.xsd
 *.dll
 *.pdb
 *.bin
+
+.env
+
+
+**/bin/*
+**/api/obj/*
